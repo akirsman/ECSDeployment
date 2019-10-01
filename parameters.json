@@ -1,0 +1,33 @@
+[
+    {
+        "ParameterKey": "AppName",
+        "ParameterValue": "test2"
+    },
+    {
+        "ParameterKey": "DesiredCapacity",
+        "ParameterValue": "1"
+    },
+    {
+        "ParameterKey": "ECSImageName",
+        "ParameterValue": "209615642202.dkr.ecr.us-east-1.amazonaws.com/test:latest"
+    },
+    {
+        "ParameterKey": "InstanceType",
+        "ParameterValue": "t2.micro"
+    },
+    {
+        "ParameterKey": "KeyName",
+        "ParameterValue": "DemoKeyPair"
+    },
+    {
+        "ParameterKey": "SubnetID",
+        "ParameterValue": [
+            "subnet-075ee409b4d167535",
+            "subnet-060437a8a3d48f066"
+        ]
+    },
+    {
+        "ParameterKey": "VpcId",
+        "ParameterValue": "vpc-092dcddf03bc7c1da"
+    }
+]
