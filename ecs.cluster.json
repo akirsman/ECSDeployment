@@ -273,7 +273,7 @@
                 ]
             }
         },
-        "PublicLoadBalancer": {
+        "LoadBalancer": {
             "Type": "AWS::ElasticLoadBalancingV2::LoadBalancer",
             "Properties": {
                 "Scheme": "internet-facing",
@@ -291,44 +291,6 @@
                         "Ref": "PublicLoadBalancerSG"
                     }
                 ]
-            }
-        },
-        "DummyTargetGroupPublic": {
-            "Type": "AWS::ElasticLoadBalancingV2::TargetGroup",
-            "Properties": {
-                "HealthCheckIntervalSeconds": 6,
-                "HealthCheckPath": "/",
-                "HealthCheckProtocol": "HTTP",
-                "HealthCheckTimeoutSeconds": 5,
-                "HealthyThresholdCount": 2,
-                "Name": "TargetGroup",
-                "Port": 80,
-                "Protocol": "HTTP",
-                "UnhealthyThresholdCount": 2,
-                "VpcId": {
-                    "Ref": "VpcId"
-                }
-            }
-        },
-        "PublicLoadBalancerListener": {
-            "Type": "AWS::ElasticLoadBalancingV2::Listener",
-            "DependsOn": [
-                "PublicLoadBalancer"
-            ],
-            "Properties": {
-                "DefaultActions": [
-                    {
-                        "TargetGroupArn": {
-                            "Ref": "DummyTargetGroupPublic"
-                        },
-                        "Type": "forward"
-                    }
-                ],
-                "LoadBalancerArn": {
-                    "Ref": "PublicLoadBalancer"
-                },
-                "Port": 80,
-                "Protocol": "HTTP"
             }
         },
         "ECSRole": {
@@ -409,7 +371,7 @@
                         "http://",
                         {
                             "Fn::GetAtt": [
-                                "PublicLoadBalancer",
+                                "LoadBalancer",
                                 "DNSName"
                             ]
                         }
@@ -452,25 +414,6 @@
                 }
             }
         },
-        "PublicListener": {
-            "Description": "The ARN of the public load balancer's Listener",
-            "Value": {
-                "Ref": "PublicLoadBalancerListener"
-            },
-            "Export": {
-                "Name": {
-                    "Fn::Join": [
-                        ":",
-                        [
-                            {
-                                "Ref": "AWS::StackName"
-                            },
-                            "PublicListener"
-                        ]
-                    ]
-                }
-            }
-        },
         "VPCId": {
             "Description": "The ID of the VPC that this stack is deployed in",
             "Value": {
@@ -504,6 +447,25 @@
                                 "Ref": "AWS::StackName"
                             },
                             "EcsHostSecurityGroup"
+                        ]
+                    ]
+                }
+            }
+        },
+        "LoadBalancer": {
+            "Description": "ARN of the load balancer",
+            "Value": {
+                "Ref": "LoadBalancer"
+            },
+            "Export": {
+                "Name": {
+                    "Fn::Join": [
+                        ":",
+                        [
+                            {
+                                "Ref": "AWS::StackName"
+                            },
+                            "LoadBalancer"
                         ]
                     ]
                 }

@@ -22,6 +22,16 @@
             "Default": 80,
             "Description": "What port number the application inside the docker container is binding to"
         },
+        "ListenerPort": {
+            "Type": "Number",
+            "Default": 80,
+            "Description": "What port number the load balancer will listen to"
+        },
+        "TargetGroupListenerPort": {
+            "Type": "Number",
+            "Default": 80,
+            "Description": "What port number the load balancer will listen to"
+        },
         "ContainerCpu": {
             "Type": "Number",
             "Default": 256,
@@ -44,7 +54,7 @@
         },
         "DesiredCount": {
             "Type": "Number",
-            "Default": 2,
+            "Default": 1,
             "Description": "How many copies of the service task to run"
         },
         "Role": {
@@ -68,7 +78,7 @@
         }
     },
     "Resources": {
-        "MyTaskDefinition": {
+        "TaskDefinition": {
             "Type": "AWS::ECS::TaskDefinition",
             "Properties": {
                 "Family": {
@@ -118,7 +128,7 @@
         },
         "Service": {
             "Type": "AWS::ECS::Service",
-            "DependsOn": "LoadBalancerRule",
+            "DependsOn": "ListenerRule",
             "Properties": {
                 "ServiceName": {
                     "Ref": "ServiceName"
@@ -144,7 +154,7 @@
                     "Ref": "DesiredCount"
                 },
                 "TaskDefinition": {
-                    "Ref": "MyTaskDefinition"
+                    "Ref": "TaskDefinition"
                 },
                 "LoadBalancers": [
                     {
@@ -170,9 +180,11 @@
                 "HealthCheckTimeoutSeconds": 5,
                 "HealthyThresholdCount": 2,
                 "Name": {
-                    "Ref": "ServiceName"
+                    "Ref": "AWS::StackName"
                 },
-                "Port": 80,
+                "Port": {
+                    "Ref": "ListenerPort"
+                },
                 "Protocol": "HTTP",
                 "UnhealthyThresholdCount": 2,
                 "VpcId": {
@@ -190,7 +202,37 @@
                 }
             }
         },
-        "LoadBalancerRule": {
+        "LoadBalancerListener": {
+            "Type": "AWS::ElasticLoadBalancingV2::Listener",
+            "Properties": {
+                "DefaultActions": [
+                    {
+                        "TargetGroupArn": {
+                            "Ref": "TargetGroup"
+                        },
+                        "Type": "forward"
+                    }
+                ],
+                "LoadBalancerArn": {
+                    "Fn::ImportValue": {
+                        "Fn::Join": [
+                            ":",
+                            [
+                                {
+                                    "Ref": "StackName"
+                                },
+                                "LoadBalancer"
+                            ]
+                        ]
+                    }
+                },
+                "Port": {
+                    "Ref": "TargetGroupListenerPort"
+                },
+                "Protocol": "HTTP"
+            }
+        },
+        "ListenerRule": {
             "Type": "AWS::ElasticLoadBalancingV2::ListenerRule",
             "Properties": {
                 "Actions": [
@@ -212,17 +254,7 @@
                     }
                 ],
                 "ListenerArn": {
-                    "Fn::ImportValue": {
-                        "Fn::Join": [
-                            ":",
-                            [
-                                {
-                                    "Ref": "StackName"
-                                },
-                                "PublicListener"
-                            ]
-                        ]
-                    }
+                    "Ref": "LoadBalancerListener"
                 },
                 "Priority": {
                     "Ref": "Priority"
