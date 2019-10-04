@@ -17,10 +17,15 @@
             "Default": "nginx",
             "Description": "The url of a docker image that contains the application process that will handle the traffic for this service"
         },
-        "ContainerPort": {
+        "Path": {
+            "Type": "String",
+            "Default": "*",
+            "Description": "A path on the public load balancer that this service should be connected to. Use * to send all load balancer traffic to this service."
+        },
+        "Priority": {
             "Type": "Number",
-            "Default": 80,
-            "Description": "What port number the application inside the docker container is binding to"
+            "Default": 1,
+            "Description": "The priority for the routing rule added to the load balancer. This only applies if your have multiple services which have been assigned to different paths on the load balancer."
         },
         "ListenerPort": {
             "Type": "Number",
@@ -30,7 +35,12 @@
         "TargetGroupListenerPort": {
             "Type": "Number",
             "Default": 80,
-            "Description": "What port number the load balancer will listen to"
+            "Description": "What port number in the target group container will listen to"
+        },
+        "ContainerPort": {
+            "Type": "Number",
+            "Default": 80,
+            "Description": "What port number the application inside the docker container is binding to"
         },
         "ContainerCpu": {
             "Type": "Number",
@@ -41,16 +51,6 @@
             "Type": "Number",
             "Default": 512,
             "Description": "How much memory in megabytes to give the container"
-        },
-        "Path": {
-            "Type": "String",
-            "Default": "*",
-            "Description": "A path on the public load balancer that this service should be connected to. Use * to send all load balancer traffic to this service."
-        },
-        "Priority": {
-            "Type": "Number",
-            "Default": 1,
-            "Description": "The priority for the routing rule added to the load balancer. This only applies if your have multiple services which have been assigned to different paths on the load balancer."
         },
         "DesiredCount": {
             "Type": "Number",
@@ -183,7 +183,7 @@
                     "Ref": "AWS::StackName"
                 },
                 "Port": {
-                    "Ref": "ListenerPort"
+                    "Ref": "TargetGroupListenerPort"
                 },
                 "Protocol": "HTTP",
                 "UnhealthyThresholdCount": 2,
@@ -227,7 +227,7 @@
                     }
                 },
                 "Port": {
-                    "Ref": "TargetGroupListenerPort"
+                    "Ref": "ListenerPort"
                 },
                 "Protocol": "HTTP"
             }
