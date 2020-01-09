@@ -128,7 +128,6 @@
         },
         "Service": {
             "Type": "AWS::ECS::Service",
-            "DependsOn": "ListenerRule",
             "Properties": {
                 "ServiceName": {
                     "Ref": "ServiceName"
@@ -230,35 +229,6 @@
                     "Ref": "ListenerPort"
                 },
                 "Protocol": "HTTP"
-            }
-        },
-        "ListenerRule": {
-            "Type": "AWS::ElasticLoadBalancingV2::ListenerRule",
-            "Properties": {
-                "Actions": [
-                    {
-                        "TargetGroupArn": {
-                            "Ref": "TargetGroup"
-                        },
-                        "Type": "forward"
-                    }
-                ],
-                "Conditions": [
-                    {
-                        "Field": "path-pattern",
-                        "Values": [
-                            {
-                                "Ref": "Path"
-                            }
-                        ]
-                    }
-                ],
-                "ListenerArn": {
-                    "Ref": "LoadBalancerListener"
-                },
-                "Priority": {
-                    "Ref": "Priority"
-                }
             }
         }
     }

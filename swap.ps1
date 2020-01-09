@@ -1,0 +1,3 @@
+aws elbv2 describe-listeners --load-balancer-arn arn:aws:elasticloadbalancing:us-east-1:209615642202:loadbalancer/app/ecscl-LoadB-HRXT605XOJ45/a821ea9bc7188b13
+aws elbv2 modify-listener --listener-arn arn:aws:elasticloadbalancing:us-east-1:209615642202:listener/app/ecscl-LoadB-HRXT605XOJ45/a821ea9bc7188b13/fb46aaa8f9526d8f --default-actions Type=forward,TargetGroupArn=arn:aws:elasticloadbalancing:us-east-1:209615642202:targetgroup/ecsservice2/4a5c61534e10f0f1
+aws elbv2 modify-listener --listener-arn arn:aws:elasticloadbalancing:us-east-1:209615642202:listener/app/ecscl-LoadB-HRXT605XOJ45/a821ea9bc7188b13/fe487a5001e5f484 --default-actions Type=forward,TargetGroupArn=arn:aws:elasticloadbalancing:us-east-1:209615642202:targetgroup/ecsservice1/6cb1f73cfa193674
